@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.yb.dao.MsgDao">
+    <!--命名空间-->
+    <!--<insert id="addMenu" parameterType="com.sz.yb.model.YbMenu" useGeneratedKeys="true" keyProperty="mid">
+        INSERT  into ybmenu (mname) VALUES  (#{mname})
+        <selectKey  resultType="int"  keyProperty="mid">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <select id="getAllMenu" resultType="com.sz.yb.model.YbMenu">
+        SELECT * from ybmenu
+    </select>
+    <update id="updateMenu">
+        UPDATE ybmenu SET mname=#{mname} where mid=#{mid}
+    </update>
+    <delete id="deleteMenu">
+        DELETE  from ybmenu WHERE mid=#{mid}
+    </delete>-->
+    <!--查询评论和回复-->
+    <!--一个评论多个回复：一对多-->
+    <resultMap id="MsgMap" type="com.sz.yb.model.YbMsg">
+        <id column="cid" property="cid" javaType="int"></id>
+        <result column="mid" property="mid" javaType="int"></result>
+        <result column="uname" property="uname" javaType="java.lang.String"></result>
+        <result column="msg" property="msg" javaType="java.lang.String"></result>
+        <result column="point" property="point" javaType="int"></result>
+        <result column="mdate" property="mdate" javaType="java.util.Date"></result>
+        <collection property="list" javaType="java.util.List" ofType="com.sz.yb.model.Reply">
+            <id column="rid" property="rid" javaType="int"></id>
+            <result column="cid" property="cid" javaType="int"></result>
+            <result column="rname" property="rname" javaType="java.lang.String"></result>
+            <result column="rmsg" property="rmsg" javaType="java.lang.String"></result>
+            <result column="rdate" property="rdate" javaType="java.util.Date"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getAllMsg" resultMap="MsgMap">
+        SELECT * from ybmsg m,ybreply r WHERE m.cid=r.cid
+    </select>
+
+</mapper>

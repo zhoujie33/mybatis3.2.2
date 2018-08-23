@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.yb.dao.MenuDao">
+    <!--命名空间-->
+<!--    <insert id="addMenu" parameterType="com.sz.yb.model.YbMenu" useGeneratedKeys="true" keyProperty="mid">
+        INSERT  into ybmenu (mname) VALUES  (#{mname})
+        <selectKey  resultType="int"  keyProperty="mid">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <select id="getAllMenu" resultType="com.sz.yb.model.YbMenu">
+        SELECT * from ybmenu
+    </select>
+    <update id="updateMenu">
+        UPDATE ybmenu SET mname=#{mname} where mid=#{mid}
+    </update>
+    <delete id="deleteMenu">
+        DELETE  from ybmenu WHERE mid=#{mid}
+    </delete>-->
+</mapper>

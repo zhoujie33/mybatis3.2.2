@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.yb.dao.FanDianDao">
+    <!--命名空间-->
+    <!--<insert id="addFanDian" parameterType="com.sz.yb.model.FanDian" useGeneratedKeys="true" keyProperty="fid">
+        INSERT  into ybfandian (fname) VALUES  (#{fname})
+        <selectKey  resultType="int"  keyProperty="fid">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>-->
+
+
+    <!--一对多查询，需要配置一个resultMapping-->
+    <resultMap id="FanDianMap" type="com.sz.yb.model.FanDian">
+        <id column="fid" property="fid" javaType="int"></id>
+        <result column="fname" property="fname" javaType="java.lang.String"></result>
+        <collection property="list" javaType="java.util.List" ofType="com.sz.yb.model.YbMenu">
+            <id column="mid" property="mid" javaType="int"></id>
+            <result column="mname" property="mname" javaType="java.lang.String"></result>
+            <result column="fid" property="fid" javaType="int"></result>
+
+        </collection>
+    </resultMap>
+    <!--一对多查询动态sql-->
+    <select id="getAllFanDian" resultMap="FanDianMap">
+        SELECT * FROM ybfandian f,ybmenu m WHERE f.fid=m.fid;
+    </select>
+    <!--一对多查询,动态sql-->
+    <select id="getAllFanDian1" resultMap="FanDianMap" parameterType="com.sz.yb.model.FanCai">
+        SELECT * from ybfandian f,ybmenu m
+        <where>
+            <if test="1==1">f.`fid`=m.`fid`</if>
+            <if test="fname!=null">and f.fname like concat('%',#{fname},'%')</if>/*test值中的fname是FacCai中的fname属性*/
+            <if test="mname!=null">and m.mname like concat('%',#{mname},'%')</if>
+        </where>
+    </select>
+   <!-- <select id="getAllFanDian1" parameterType="com.sz.yb.model.FanCai"  resultMap="FanDianMap">
+        SELECT * FROM ybfandian f, ybmenu m
+        <where>
+            <if test="1==1">
+                f.`fid`=m.`fid`
+            </if>
+            <if test="fname!=null">
+                and f.fname like concat('%',#{fname},'%')
+            </if>
+            <if test="mname!=null">
+                and m.mname like concat('%',#{mname},'%')
+            </if>
+        </where>
+    </select>-->
+  <!--  <select id="getAllFanDian" resultType="com.sz.yb.model.FanDian">
+        SELECT * from ybfandian
+    </select>
+    <update id="updateFanDian">
+        UPDATE ybfandian SET fname=#{fname} where fid=#{fid}
+    </update>
+    <delete id="deleteFanDian">
+        DELETE  from ybfandian WHERE fid=#{fid}
+    </delete>-->
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--导约束-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+	      http://www.springframework.org/schema/beans
+		  http://www.springframework.org/schema/beans/spring-beans.xsd
+		  http://www.springframework.org/schema/context
+		  http://www.springframework.org/schema/context/spring-context.xsd
+		  http://www.springframework.org/schema/aop
+		  http://www.springframework.org/schema/aop/spring-aop.xsd
+		  http://www.springframework.org/schema/tx
+		  http://www.springframework.org/schema/tx/spring-tx.xsd
+		  http://www.springframework.org/schema/mvc
+		  http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--&lt;!&ndash;注解映射器和设配器配置(不是最新的方法)&ndash;&gt;
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"> </bean>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>-->
+    <!--使用mvc mvc:annotation-driven代替上面的注解映射器和设配器配置
+    ，且它默认加载了很多的参数绑定方法，比如json转换解析器就默认加载了，实际开发我们用次方法-->
+    <mvc:annotation-driven />
+    <!--配置包扫描路径(找到处理器？)-->
+    <context:component-scan base-package="com.sz.yb" />
+
+
+    <!-- 配置数据源； -->
+    <!-- 设置为close使Spring容器关闭同时数据源能够正常关闭，以免造成连接泄露 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/szybjava3?useUnicode=true&amp;characterEncoding=UTF-8" />
+        <property name="username" value="root" />
+        <property name="password" value="1234" />
+        <!-- 设置为只读状态，配置读写分离时，读库可以设置为true
+        在连接池创建后，会初始化并维护一定数量的数据库安连接，当请求过多时，数据库会动态增加连接数，
+        当请求过少时，连接池会减少连接数至一个最小空闲值 -->
+        <property name="defaultReadOnly" value="false" />
+        <!-- 在启动连接池初始创建的数据库连接，默认为0 -->
+        <property name="initialSize" value="5" />
+        <!-- 设置数据库同一时间的最大活跃连接默认为8，负数表示不闲置 -->
+        <property name="maxActive" value="30" />
+        <!-- 在连接池空闲时的最大连接数，超过的会被释放，默认为8，负数表示不闲置 -->
+        <property name="maxIdle" value="5"/>
+        <!-- 空闲时的最小连接数，低于这个数量会创建新连接，默认为0 -->
+        <property name="minIdle" value="3" />
+        <!-- 连接被用完时等待归还的最大等待时间，单位毫秒，超出时间抛异常，默认为无限等待 -->
+        <property name="maxWait" value="30000" />
+    </bean>
+    <!--***************************************************************-->
+    <!--配置SqlSessoinFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+
+        <!--加载此配置文件的作用主要是写日志：-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <property name="mapperLocations" value="classpath:com/sz/yb/dao/*.xml"></property>
+    </bean>
+
+    <!--  接口与sql配置的映射；自动扫锚接口与配置，以后不再写dao层接口的实现类了； -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.sz.yb.dao"></property>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory">
+        </property>
+    </bean>
+
+<!--
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>-->
+
+	<!-- set方法注入； -->
+	<bean id="user1" class="com.sz.yb.model.YbUser">
+        <property name="uid" value="101"></property>
+        <property name="uname" value="隔壁老王"></property>
+        <property name="upwd" value="123123"></property>
+    </bean>
+
+	<!-- 构造方法注入； -->
+	<bean id="user2" class="com.sz.yb.model.YbUser">
+	 		<constructor-arg name="uid" value="102"></constructor-arg>
+			<constructor-arg name="uname" value="张三"></constructor-arg>
+			<constructor-arg name="upwd" value="111111"></constructor-arg>
+	</bean>
+
+	<!--<bean id="ybUserService" class="com.sz.yb.service.YbUserService">
+		<property name="ybUser" ref="user1"></property>
+ 	</bean>
+	<bean id="YbLog" class="com.sz.yb.log.YbLog"/>
+	<aop:config>
+		<aop:pointcut id="pc" expression="execution(* com.sz.yb.service.*.*(..))"/>
+		<aop:aspect id="aspect" ref="YbLog">
+			<aop:before method="doBefore" pointcut-ref="pc"/>
+			<aop:around method="doAround" pointcut-ref="pc"/>
+			<aop:after method="doAfter" pointcut-ref="pc"/>
+		</aop:aspect>
+	</aop:config>
+-->
+    <!--视图解析器-->
+    <!-- SpringMvc视图解释器 View配置  -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/" /><!-- 前缀 -->
+        <property name="suffix" value=".jsp" /> <!-- 后缀 -->
+    </bean>
+
+    <!--文件上传-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 上传文件大小上限，单位为字节（10MB） -->
+        <property name="maxUploadSize">
+            <value>10485760</value>
+        </property>
+
+        <!-- 请求的编码格式，必须和jSP的pageEncoding属性一致，以便正确读取表单的内容，默认为ISO-8859-1 -->
+        <property name="defaultEncoding">
+            <value>UTF-8</value>
+        </property>
+    </bean>
+
+</beans>

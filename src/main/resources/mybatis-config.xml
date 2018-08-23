@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- mybatis可以使用properties标签引入外部properties文件的内容
+  resource：引入类路径下的的资源
+  URL：引入磁盘路径或者网络路径下的资源
+  -->
+    <!--<properties resource="com/sz/yb/dao/DBconfig.properties">
+
+    </properties>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${mysql.driver}" />
+                <property name="url" value="${mysql.url}" />
+                <property name="username" value="${mysql.username}" />
+                <property name="password" value="${mysql.password}" />
+            </dataSource>
+        </environment>
+    </environments>-->
+
+  <!--Mappers标签：将sql映射配置文件注册到mybatis-config.xml核心配置文件中-->
+  <!--<mappers>
+    &lt;!&ndash;每一个mapper标签注册一个映射文件：
+    resource：注册类路径下的映射文件-是对dao的sql映射（例如UserDao的类路径+文件：com/sz/yb/dao/Ybuser.xml）
+    URL：注册网络或者磁盘路径下文件
+    class 注册/引用接口：方法1.映射文件，映射文件名与接口同名，且与接口同目录
+        方法2.无映射文件，在接口上方@Select/Insert/Delete/Update("sql语句")
+        不重要的，简单的Dao接口为了实现快速开发可以用此方法，其推荐使用配置文件&ndash;&gt;
+
+    <mapper resource="com/sz/yb/dao/Ybuser.xml" />
+    <mapper resource="com/sz/yb/dao/Ybmenu.xml" />
+  </mappers>-->
+
+    <settings>
+    <!-- 打印sql语句到控制台，可用于调试 -->
+    <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+</configuration>
